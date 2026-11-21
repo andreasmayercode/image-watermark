@@ -46,7 +46,7 @@ image-watermark serve  -listen 127.0.0.1:8080 -key-file watermark.key
 Nach dem Einbetten liest das Programm die Kennung selbst wieder aus
 (`verified`) und warnt, wenn das nicht sicher gelingt.
 
-### Synchronisationsmuster (seit 1.3.0)
+### Synchronisationsmuster
 
 Das 512er-Raster hängt am Bildrahmen. Schneidet jemand einen Rand ab, dreht das Bild um
 einen freien Winkel oder setzt es in eine Collage, verschieben sich alle Träger – die
@@ -85,7 +85,7 @@ Eine Prüfung ohne Treffer dauert länger (1–3 s), weil alle Fenster durchsuch
 ## Gemessene Robustheit
 
 41 Fotos (1200–2240 px breit, darunter Panoramen und freigestellte Produkte),
-Kennung 3141592653, Standardstärke, Version 1.3.0. „OK“ = Kennung korrekt gelesen;
+Kennung 3141592653, Standardstärke, Version 1.0.0. „OK“ = Kennung korrekt gelesen;
 in keinem Fall wurde eine falsche Kennung gelesen. Zwei sehr strukturarme Bilder
 (`verified: false` schon beim Einbetten) sind mitgezählt.
 
@@ -96,7 +96,7 @@ in keinem Fall wurde eine falsche Kennung gelesen. Zwei sehr strukturarme Bilder
 | auf 300 px Breite | 35/41 |
 | verzerrt skaliert (70 % × 50 %), 90° gedreht | 40/41 |
 | Weichzeichner (auf ⅓ und zurück) | 39/41 |
-| **2 % Rand abgeschnitten** | **37/41** (1.2.0: 0) |
+| **2 % Rand abgeschnitten** | **37/41** |
 | **ungleichmäßig beschnitten (10/3/17/8 %, ~26 % der Fläche)** | **31/41** |
 | **um 3° gedreht** (Leinwand vergrößert) | **37/41** |
 | um 17° gedreht und auf das Innere beschnitten | 17/41 |
@@ -107,7 +107,7 @@ in keinem Fall wurde eine falsche Kennung gelesen. Zwei sehr strukturarme Bilder
 | beschnitten (~30 % der Fläche) und auf 50 % verkleinert | 15/41 |
 | Mittelausschnitt 50 % × 50 %, Collage mit 25 % der Breite | 0/41 |
 
-Zweite Stichprobe (1.3.0): 54 Kamerafotos bis 16 MP und 6 Bildschirmfotos (PNG).
+Zweite Stichprobe: 54 Kamerafotos bis 16 MP und 6 Bildschirmfotos (PNG).
 
 | Veränderung | 54 Fotos | 6 Bildschirmfotos |
 |---|---|---|
@@ -120,7 +120,7 @@ Zweite Stichprobe (1.3.0): 54 Kamerafotos bis 16 MP und 6 Bildschirmfotos (PNG).
 | Collage 60 % / 40 % der Breite | 37/54, 23/54 | 2/6, 1/6 |
 
 Die 6 nicht lesbaren Fotos sind sehr weiche Motive (Dunst, Gegenlicht, Sonnenuntergang):
-Dort scheitert schon das Einbetten der Kennung (`verified: false`, ebenso mit 1.2.0), das
+Dort scheitert schon das Einbetten der Kennung (`verified: false`), das
 Synchronisationsmuster allein hilft dann nicht. Bildschirmfotos mit viel Weiß und Text
 tragen wenig Wasserzeichen; ein fast leeres Fenster (Textur 0,05) nimmt gar keins an.
 Fehlalarme: alle 60 Bilder unverändert, beschnitten und gedreht mit fremdem Schlüssel –
@@ -132,8 +132,8 @@ wird es: Die Kennung ist informiert eingebettet (sie gleicht das Bild selbst aus
 braucht deshalb den größten Teil des Originalrahmens. Bei größeren Verlusten meldet
 `detect` oft wenigstens `present_unreadable`.
 
-Fehlalarme: 301 unmarkierte Bilder (1.0.0), kein einziger Treffer (höchstes Signal
-3,4; zusätzlich müssen CRC-16 und acht Pilotbits stimmen). 1.3.0 mit
+Fehlalarme: 301 unmarkierte Bilder, kein einziger Treffer (höchstes Signal
+3,4; zusätzlich müssen CRC-16 und acht Pilotbits stimmen). Mit
 Synchronisationssuche: 41 unmarkierte Bilder je unverändert, beschnitten und gedreht,
 kein Treffer (höchstes Signal 3,3). Mit falschem Schlüssel wird nichts erkannt.
 
@@ -160,7 +160,7 @@ eingebettet meldet `embed` teils `verified: false`.
 
 ### Laufzeit und Speicher
 
-Gemessen mit 1.3.0 auf 8 Kernen (ARM64):
+Gemessen mit 1.0.0 auf 8 Kernen (ARM64):
 
 | Bild | Einbetten | Erkennen direkt | Erkennen über Synchronisation (10 % beschnitten) | unmarkiert (alle Fenster) | Speicherspitze |
 |---|---|---|---|---|---|

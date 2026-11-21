@@ -45,7 +45,7 @@ image-watermark serve  -listen 127.0.0.1:8080 -key-file watermark.key
 After embedding, the program reads the ID back itself (`verified`) and warns if that does
 not succeed reliably.
 
-### Sync pattern (since 1.3.0)
+### Sync pattern
 
 The 512 grid is tied to the image frame. If someone crops off a border, rotates the image
 by an arbitrary angle or puts it into a collage, all carriers shift – without help the ID
@@ -82,7 +82,7 @@ without a match takes longer (1–3 s) because all windows are searched.
 ## Measured robustness
 
 41 photos (1200–2240 px wide, including panoramas and cut-out products), ID 3141592653,
-default strength, version 1.3.0. “OK” = ID read correctly; in no case was a wrong ID read.
+default strength, version 1.0.0. “OK” = ID read correctly; in no case was a wrong ID read.
 Two images with very little texture (`verified: false` already when embedding) are
 included in the count.
 
@@ -93,7 +93,7 @@ included in the count.
 | to 300 px width | 35/41 |
 | distorted scaling (70 % × 50 %), rotated 90° | 40/41 |
 | blur (to ⅓ and back) | 39/41 |
-| **2 % border cropped** | **37/41** (1.2.0: 0) |
+| **2 % border cropped** | **37/41** |
 | **unevenly cropped (10/3/17/8 %, ~26 % of the area)** | **31/41** |
 | **rotated by 3°** (canvas enlarged) | **37/41** |
 | rotated by 17° and cropped to the interior | 17/41 |
@@ -104,7 +104,7 @@ included in the count.
 | cropped (~30 % of the area) and downscaled to 50 % | 15/41 |
 | center crop 50 % × 50 %, collage at 25 % of the width | 0/41 |
 
-Second sample (1.3.0): 54 camera photos up to 16 MP and 6 screenshots (PNG).
+Second sample: 54 camera photos up to 16 MP and 6 screenshots (PNG).
 
 | Change | 54 photos | 6 screenshots |
 |---|---|---|
@@ -117,7 +117,7 @@ Second sample (1.3.0): 54 camera photos up to 16 MP and 6 screenshots (PNG).
 | collage at 60 % / 40 % of the width | 37/54, 23/54 | 2/6, 1/6 |
 
 The 6 unreadable photos are very soft subjects (haze, backlight, sunset): there, embedding
-the ID already fails (`verified: false`, likewise with 1.2.0), and the sync pattern alone
+the ID already fails (`verified: false`), and the sync pattern alone
 does not help. Screenshots with a lot of white and text carry little watermark; an almost
 empty window (texture 0.05) takes none at all. False positives: all 60 images unchanged,
 cropped and rotated with a different key – no match (highest signal 3.2).
@@ -128,8 +128,8 @@ embedded in an informed way (it compensates for the image itself) and therefore 
 of the original frame. With larger losses, `detect` often reports at least
 `present_unreadable`.
 
-False positives: 301 unmarked images (1.0.0), not a single match (highest signal 3.4; in
-addition, CRC-16 and eight pilot bits must match). 1.3.0 with sync search: 41 unmarked
+False positives: 301 unmarked images, not a single match (highest signal 3.4; in
+addition, CRC-16 and eight pilot bits must match). With sync search: 41 unmarked
 images each unchanged, cropped and rotated, no match (highest signal 3.3). With a wrong
 key nothing is detected.
 
@@ -155,7 +155,7 @@ sometimes reports `verified: false`.
 
 ### Runtime and memory
 
-Measured with 1.3.0 on 8 cores (ARM64):
+Measured with 1.0.0 on 8 cores (ARM64):
 
 | Image | Embed | Detect directly | Detect via sync (10 % cropped) | unmarked (all windows) | Peak memory |
 |---|---|---|---|---|---|
