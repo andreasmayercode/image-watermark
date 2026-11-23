@@ -223,6 +223,11 @@ image-watermark embed -in upload.jpg -out upload.jpg -id 4711 \
 - EXIF, ICC-Profil, XMP und IPTC bleiben bei JPEG erhalten.
 - `-strength 1.5` macht es robuster (und eher sichtbar), `-quality 92` ist die
   JPEG-Qualität, `-no-mask` verteilt gleichmäßig (nur für Sonderfälle).
+- `-namespace meine-app` bettet in einen eigenen Namensraum ein (Buchstaben, Ziffern, `.`,
+  `_`, `-`; Standard `image-watermark`). Wasserzeichen eines Namensraums werden mit einem
+  anderen nicht gefunden, `detect` und `serve` brauchen also dasselbe `-namespace`. So kann
+  eine Anwendung das fertige Programm nutzen, statt ein eigenes zu bauen (siehe
+  „Go-Bibliothek“).
 - Exit-Code 0 = eingebettet. Bei `verified: false` (Bild zu strukturarm) steht
   eine Warnung auf stderr, ebenso bei schwachem Synchronisationsmuster
   (`sync_confidence` unter 7: Zuschnitt und Drehung dann eher nicht lesbar).
@@ -270,7 +275,8 @@ Bilder werden nicht gespeichert.
 der Website kopieren, Binary und Schlüssel **außerhalb** des Document-Root. Die
 Pfade stehen oben in `detect.php` (Standard: `../bin/image-watermark`,
 `../private/watermark.key`) oder kommen aus den Umgebungsvariablen `IMAGE_WM_BINARY` und
-`IMAGE_WM_KEY_FILE` (Apache: `SetEnv`). PHP braucht `proc_open` (bei manchen
+`IMAGE_WM_KEY_FILE` (Apache: `SetEnv`); `IMAGE_WM_NAMESPACE` setzt `-namespace`, falls die
+Bilder damit markiert wurden. PHP braucht `proc_open` (bei manchen
 Shared-Hosting-Tarifen gesperrt, dann Variante B). `upload_max_filesize` und
 `post_max_size` müssen zur Bildgröße passen.
 

@@ -102,6 +102,10 @@ Key (required, the same for embed and detect), first match wins:
   %-21[4]s environment variable
   -key KEY              on the command line (visible in the process list)
 
+Namespace (optional, the same for embed and detect):
+  -namespace NS         separates the marks of different applications
+                        (letters, digits, ".", "_", "-"; default %[6]q)
+
 embed:
 %[5]s  -strength F           1.0 = default; higher = more robust, more visible (0.3 … 3)
   -quality Q            JPEG quality of the output (default 92)
@@ -119,19 +123,31 @@ detect:
 serve:
   -listen ADDR          HTTP address (default 127.0.0.1:8080)
   -max-mb N             upload limit in MB (default 30)
-`, n, cfg.Version, embedArgs, cfg.KeyEnv, idLine)
+`, n, cfg.Version, embedArgs, cfg.KeyEnv, idLine, cfg.namespace())
 }
 
-type keyFlags struct{ file, inline *string }
+// namespace is the default of the flag -namespace: the one of the program,
+// otherwise watermark.DefaultNamespace.
+func (cfg Config) namespace() string {
+	if cfg.Namespace != "" {
+		return cfg.Namespace
+	}
+	return watermark.DefaultNamespace
+}
 
-func addKeyFlags(fs *flag.FlagSet) keyFlags {
+// keyFlags are the flags every command needs: key and namespace.
+type keyFlags struct{ file, inline, namespace *string }
+
+func (cfg Config) addKeyFlags(fs *flag.FlagSet) keyFlags {
 	return keyFlags{
-		file:   fs.String("key-file", "", "file with the secret key"),
-		inline: fs.String("key", "", "secret key (visible in the process list)"),
+		file:      fs.String("key-file", "", "file with the secret key"),
+		inline:    fs.String("key", "", "secret key (visible in the process list)"),
+		namespace: fs.String("namespace", cfg.namespace(), "namespace of the watermark"),
 	}
 }
 
-// watermarker loads the key (file, environment, flag) and prepares the layouts.
+// watermarker loads the key (file, environment, flag) and prepares the layouts
+// for the namespace (flag -namespace, default the one of the program).
 func (cfg Config) watermarker(k keyFlags) (*watermark.Watermarker, error) {
 	var key string
 	switch {
@@ -149,7 +165,7 @@ func (cfg Config) watermarker(k keyFlags) (*watermark.Watermarker, error) {
 	if len(key) < watermark.MinKeyLength {
 		return nil, fmt.Errorf("secret key missing or shorter than %d characters (-key-file, %s or -key)", watermark.MinKeyLength, cfg.KeyEnv)
 	}
-	return watermark.New([]byte(key), watermark.Options{Namespace: cfg.Namespace})
+	return watermark.New([]byte(key), watermark.Options{Namespace: *k.namespace})
 }
 
 // label shows the id with its text (Codec), if it is one.
@@ -199,7 +215,7 @@ func (cfg Config) embed(args []string) error {
 	quality := fs.Int("quality", 92, "JPEG quality")
 	noMask := fs.Bool("no-mask", false, "no perceptual mask")
 	asJSON := fs.Bool("json", false, "JSON output")
-	kf := addKeyFlags(fs)
+	kf := cfg.addKeyFlags(fs)
 	fs.Parse(args)
 	if *in == "" || *out == "" || (*idStr == "") == (*textStr == "") {
 		if cfg.Codec != nil {
@@ -278,7 +294,7 @@ func (cfg Config) detect(args []string) (int, error) {
 	in := fs.String("in", "", "image to check")
 	asJSON := fs.Bool("json", false, "JSON output")
 	verbose := fs.Bool("v", false, "per-bit scores")
-	kf := addKeyFlags(fs)
+	kf := cfg.addKeyFlags(fs)
 	fs.Parse(args)
 	if *in == "" {
 		return 2, errors.New("detect needs -in")

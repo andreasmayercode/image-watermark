@@ -216,6 +216,10 @@ image-watermark embed -in upload.jpg -out upload.jpg -id 4711 \
 - EXIF, ICC profile, XMP and IPTC are preserved for JPEG.
 - `-strength 1.5` makes it more robust (and more likely visible), `-quality 92` is the
   JPEG quality, `-no-mask` distributes evenly (only for special cases).
+- `-namespace my-app` embeds in a namespace of your own (letters, digits, `.`, `_`, `-`;
+  default `image-watermark`). Marks of one namespace are not found with another one, so
+  `detect` and `serve` need the same `-namespace`. This lets an application use the
+  ready-made binary instead of building its own program (see “Go library”).
 - Exit code 0 = embedded. With `verified: false` (image has too little texture) a warning
   is written to stderr, likewise with a weak sync pattern (`sync_confidence` below 7:
   cropping and rotation then probably not readable).
@@ -263,7 +267,8 @@ stored.
 **Option A: PHP web hosting.** Copy `index.html` and `detect.php` into a directory of the
 website, binary and key **outside** the document root. The paths are at the top of
 `detect.php` (default: `../bin/image-watermark`, `../private/watermark.key`) or come from
-the environment variables `IMAGE_WM_BINARY` and `IMAGE_WM_KEY_FILE` (Apache: `SetEnv`).
+the environment variables `IMAGE_WM_BINARY` and `IMAGE_WM_KEY_FILE` (Apache: `SetEnv`);
+`IMAGE_WM_NAMESPACE` sets `-namespace` if the images were marked with one.
 PHP needs `proc_open` (disabled on some shared hosting plans, then option B).
 `upload_max_filesize` and `post_max_size` must match the image size.
 

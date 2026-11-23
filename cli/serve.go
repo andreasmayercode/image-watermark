@@ -17,7 +17,7 @@ func (cfg Config) serve(args []string) error {
 	fs := flag.NewFlagSet("serve", flag.ExitOnError)
 	listen := fs.String("listen", "127.0.0.1:8080", "HTTP address")
 	maxMB := fs.Int64("max-mb", 30, "upload limit in MB")
-	kf := addKeyFlags(fs)
+	kf := cfg.addKeyFlags(fs)
 	fs.Parse(args)
 	wm, err := cfg.watermarker(kf)
 	if err != nil {

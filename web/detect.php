@@ -13,8 +13,10 @@
 // override the paths without editing this file, e.g. Apache:
 //     SetEnv IMAGE_WM_BINARY   /opt/watermark/bin/image-watermark
 //     SetEnv IMAGE_WM_KEY_FILE /opt/watermark/private/watermark.key
+//     SetEnv IMAGE_WM_NAMESPACE my-app      (only if embedded with -namespace)
 $binary  = getenv('IMAGE_WM_BINARY') ?: __DIR__ . '/../bin/image-watermark';
 $keyFile = getenv('IMAGE_WM_KEY_FILE') ?: __DIR__ . '/../private/watermark.key';
+$namespace = getenv('IMAGE_WM_NAMESPACE') ?: '';
 $maxMb   = 30;
 // --------------------------------------------------------------------------
 
@@ -60,6 +62,9 @@ if (!$lock) {
 }
 
 $cmd = [$binary, 'detect', '-json', '-key-file', $keyFile, '-in', $f['tmp_name']];
+if ($namespace !== '') {
+	array_push($cmd, '-namespace', $namespace);
+}
 $proc = proc_open($cmd, [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
 if (!is_resource($proc)) {
 	fail(500, 'detector could not be started');
