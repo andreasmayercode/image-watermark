@@ -346,7 +346,7 @@ r := w.Detect(img, false) // r.Found, *r.ID, r.Confidence, r.Synced …
 Das Paket `cli` ist das vollständige Kommandozeilenprogramm (embed, detect, serve, version).
 Eine Anwendung baut damit ihr eigenes Programm mit Name, Schlüssel-Variable, Namensraum,
 Prüfseite und – auf Wunsch – einem `cli.Codec`, der die 32-Bit-Kennung als Text zeigt
-(Schalter und JSON-Feld mit dem Namen des Codecs, z. B. `-code AM-NRD` / `"code":"AM-NRD"`):
+(Schalter und JSON-Feld mit dem Namen des Codecs, z. B. `-code ANDYCO` / `"code":"ANDYCO"`):
 
 ```go
 package main
