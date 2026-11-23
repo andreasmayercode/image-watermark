@@ -337,7 +337,7 @@ r := w.Detect(img, false) // r.Found, *r.ID, r.Confidence, r.Synced …
 The package `cli` is the complete command line program (embed, detect, serve, version).
 An application builds its own program with its name, key variable, namespace, checking
 page and – optionally – a `cli.Codec` that shows the 32-bit ID as text (flag and JSON
-field of the codec's name, e.g. `-code GS-NRD` / `"code":"GS-NRD"`):
+field of the codec's name, e.g. `-code AM-NRD` / `"code":"AM-NRD"`):
 
 ```go
 package main
